@@ -9,7 +9,12 @@ RUN apk add --no-cache \
     autoconf \
     g++ \
     make \
-    openssl-dev
+    openssl-dev \
+    zip \
+    unzip \
+    zlib-dev \
+    linux-headers \
+    rabbitmq-c-dev
 
 
 # Optional, force UTC as server time
@@ -42,6 +47,12 @@ RUN apk add --no-cache \
 # Install mysql extension
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
+# Install amqp extension
+RUN pecl install amqp && docker-php-ext-enable amqp
+
+# Install grpc extension for PHP
+RUN pecl install grpc
+RUN docker-php-ext-enable grpc
 
 # Install opcache, xdebug, redis, mongodb
 RUN docker-php-source extract \

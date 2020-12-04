@@ -1,0 +1,23 @@
+framework:
+  messenger:
+    # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+    # failure_transport: failed
+
+    transports:
+      # https://symfony.com/doc/current/messenger.html#transport-configuration
+      async:
+        serializer: trigger_hook_service.serializer
+        dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+        options:
+          exchange:
+            name: image_resize_ex
+            type: fanout
+          queues:
+            image_resize_qu:
+
+
+      # failed: 'doctrine://default?queue_name=failed'
+      # sync: 'sync://'
+
+    routing:
+      'App\InfrastructureService\TriggerHookService\BusMessage\TaskExecuteMessage': async

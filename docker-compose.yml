@@ -41,9 +41,25 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: secret
     working_dir: /app
+    networks:
+      - my-network
     volumes:
       - ./docker/data/dump/mysql:/app/dump
       - ./docker/data/mysql:/var/lib/mysql
+
+  rabbitmq:
+    container_name: rabbitmq
+    build: ./docker/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15671:15671"
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=secret
+    working_dir: /app
+    networks:
+      - my-network
 
 networks:
   my-network:
