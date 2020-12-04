@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\DomainService\TasksDeferredService\Event;
+namespace App\DomainService\TaskService\Event;
 
 
-use App\DomainService\TasksDeferredService\Entity\Task;
+use App\DomainService\TaskService\Entity\Task;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class TaskCanceledEvent extends Event

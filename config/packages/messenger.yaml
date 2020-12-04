@@ -6,7 +6,7 @@ framework:
     transports:
       # https://symfony.com/doc/current/messenger.html#transport-configuration
       async:
-        serializer: trigger_hook_service.serializer
+        serializer: task_server_grpc_adapter.serializer
         dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
         options:
           exchange:
@@ -20,4 +20,4 @@ framework:
       # sync: 'sync://'
 
     routing:
-      'App\InfrastructureService\TriggerHookService\BusMessage\TaskExecuteMessage': async
+      'App\InfrastructureService\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage': async

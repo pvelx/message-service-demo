@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\InfrastructureService\TriggerHookService\Event;
+namespace App\InfrastructureService\TaskServerGrpcAdapter\Event;
 
 
 use Symfony\Contracts\EventDispatcher\Event;

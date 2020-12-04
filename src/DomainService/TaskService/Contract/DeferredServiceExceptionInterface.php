@@ -1,8 +1,7 @@
 <?php
 
 
-namespace App\InfrastructureService\TriggerHookService\Exception;
-
+namespace App\DomainService\TaskService\Contract;
 
 interface DeferredServiceExceptionInterface extends \Throwable
 {

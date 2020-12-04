@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\DomainService\TasksDeferredService\Event;
+namespace App\DomainService\TaskService\Event;
 
 
 use Symfony\Contracts\EventDispatcher\Event;

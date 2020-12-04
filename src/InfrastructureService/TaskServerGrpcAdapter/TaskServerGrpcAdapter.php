@@ -1,17 +1,17 @@
 <?php
 
 
-namespace App\InfrastructureService\TriggerHookService;
+namespace App\InfrastructureService\TaskServerGrpcAdapter;
 
 
-use App\DomainService\TasksDeferredService\DelayServiceInterface;
-use App\InfrastructureService\TriggerHookService\Exception\TaskDeferredServiceException;
+use App\DomainService\TaskService\Contract\DelayServiceInterface;
+use App\InfrastructureService\TaskServerGrpcAdapter\Exception\TaskDeferredServiceException;
 use Grpc\ChannelCredentials;
 use Proto\Request;
 use Proto\Response;
 use Proto\TaskClient;
 
-class TriggerHookService implements DelayServiceInterface
+class TaskServerGrpcAdapter implements DelayServiceInterface
 {
     private $client;
 

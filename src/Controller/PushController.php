@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\DomainService\TasksDeferredService\Config;
-use App\DomainService\TasksDeferredService\TasksDeferredService;
-use App\InfrastructureService\TriggerHookService\BusMessage\TaskExecuteMessage;
+use App\DomainService\TaskService\Config;
+use App\DomainService\TaskService\TaskService;
+use App\InfrastructureService\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +16,7 @@ class PushController extends AbstractController
     private $tasksDeferredService;
     private $bus;
 
-    public function __construct(TasksDeferredService $tasksDeferredService, MessageBusInterface $bus)
+    public function __construct(TaskService $tasksDeferredService, MessageBusInterface $bus)
     {
         $this->tasksDeferredService = $tasksDeferredService;
         $this->bus = $bus;

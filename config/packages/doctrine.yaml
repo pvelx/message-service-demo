@@ -13,8 +13,8 @@ doctrine:
             DeferredTask:
                 is_bundle: false
                 type: annotation
-                dir: '%kernel.project_dir%/src/DomainService/TasksDeferredService/Entity'
-                prefix: 'App\DomainService\TasksDeferredService\Entity'
+                dir: '%kernel.project_dir%/src/DomainService/TaskService/Entity'
+                prefix: 'App\DomainService\TaskService\Entity'
                 alias: DeferredTask
             Push:
                 is_bundle: false

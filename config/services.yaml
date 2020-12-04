@@ -22,7 +22,7 @@ services:
       - '../src/Entity/'
       - '../src/Kernel.php'
       - '../src/Tests/'
-      - '../src/DomainService/TasksDeferredService/Entity'
+      - '../src/DomainService/TaskService/Entity'
 
   # controllers are imported separately to make sure services can be injected
   # as action arguments even if you don't extend any base controller class
@@ -33,29 +33,29 @@ services:
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
 
-  App\InfrastructureService\TriggerHookService\TriggerHookService:
+  App\InfrastructureService\TaskServerGrpcAdapter\TaskServerGrpcAdapter:
     arguments:
-      $host: '%env(TASKS_DEFERRED_SERVICE_HOST)%'
+      $host: '%env(TASK_GRPC_SERVER_HOST)%'
 
-  App\DomainService\TasksDeferredService\DelayServiceInterface:
-    alias: App\InfrastructureService\TriggerHookService\TriggerHookService
+  App\DomainService\TaskService\Contract\DelayServiceInterface:
+    alias: App\InfrastructureService\TaskServerGrpcAdapter\TaskServerGrpcAdapter
 
 
-  trigger_hook_service.serializer:
-    class: App\InfrastructureService\TriggerHookService\Serializer
+  task_server_grpc_adapter.serializer:
+    class: App\Serializer\AmqpMessageSerializer
     arguments:
-      $messageClass: App\InfrastructureService\TriggerHookService\BusMessage\TaskExecuteMessage
+      $messageClass: App\InfrastructureService\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage
 
 
-  App\DomainService\TasksDeferredService\TasksDeferredService:
+  App\DomainService\TaskService\TaskService:
     tags:
       - name: kernel.event_listener
-        event: App\InfrastructureService\TriggerHookService\Event\TaskExecuteEvent
+        event: App\InfrastructureService\TaskServerGrpcAdapter\Event\TaskExecuteEvent
         method: onTaskExecuteEvent
 
 
   App\Domain\Push\PushManager:
     tags:
       - name: kernel.event_listener
-        event: App\DomainService\TasksDeferredService\Event\SendingTimePushTriggeredEvent
+        event: App\DomainService\TaskService\Event\SendingTimePushTriggeredEvent
         method: onSendingTimePushTriggeredEvent

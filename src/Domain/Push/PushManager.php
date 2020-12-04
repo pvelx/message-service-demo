@@ -11,8 +11,8 @@ use App\Domain\Push\Event\PushScheduledEvent;
 use App\Domain\Push\Event\PushShippedEvent;
 use App\Domain\Push\Exception\PushManagerException;
 use App\Domain\Push\Repository\PushRepository;
-use App\DomainService\TasksDeferredService\Config;
-use App\DomainService\TasksDeferredService\TasksDeferredService;
+use App\DomainService\TaskService\Config;
+use App\DomainService\TaskService\TaskService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use Exception;
@@ -27,7 +27,7 @@ class PushManager
     private $pushRepository;
 
     public function __construct(
-        TasksDeferredService $tasksDeferredService,
+        TaskService $tasksDeferredService,
         EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher,
         PushRepository $pushRepository

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace App\InfrastructureService\TriggerHookService;
+namespace App\Serializer;
 
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Envelope;
@@ -25,7 +25,7 @@ use Symfony\Component\Serializer\Serializer as SymfonySerializer;
 use Symfony\Component\Serializer\SerializerInterface as SymfonySerializerInterface;
 
 
-class Serializer implements SerializerInterface
+class AmqpMessageSerializer implements SerializerInterface
 {
     private $serializer;
     private $format;

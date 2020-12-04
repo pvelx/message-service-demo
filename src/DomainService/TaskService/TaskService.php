@@ -1,21 +1,22 @@
 <?php
 
 
-namespace App\DomainService\TasksDeferredService;
+namespace App\DomainService\TaskService;
 
-use App\DomainService\TasksDeferredService\Entity\Task;
-use App\DomainService\TasksDeferredService\Event\TaskCanceledEvent;
-use App\DomainService\TasksDeferredService\Event\TaskCreatedEvent;
-use App\DomainService\TasksDeferredService\Repository\TaskRepository;
-use App\InfrastructureService\TriggerHookService\Event\TaskExecuteEvent;
-use App\InfrastructureService\TriggerHookService\Exception\DeferredServiceExceptionInterface;
+use App\DomainService\TaskService\Contract\DeferredServiceExceptionInterface;
+use App\DomainService\TaskService\Contract\DelayServiceInterface;
+use App\DomainService\TaskService\Entity\Task;
+use App\DomainService\TaskService\Event\TaskCanceledEvent;
+use App\DomainService\TaskService\Event\TaskCreatedEvent;
+use App\DomainService\TaskService\Repository\TaskRepository;
+use App\InfrastructureService\TaskServerGrpcAdapter\Event\TaskExecuteEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use LogicException;
 use Proto\Request;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-class TasksDeferredService
+class TaskService
 {
     private $delayService;
     private $entityManager;

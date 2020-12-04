@@ -1,9 +1,8 @@
 <?php
 
 
-namespace App\DomainService\TasksDeferredService;
+namespace App\DomainService\TaskService\Contract;
 
-use App\InfrastructureService\TriggerHookService\Exception\DeferredServiceExceptionInterface;
 use Proto\Request;
 use Proto\Response;
 

@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\InfrastructureService\TriggerHookService;
+namespace App\InfrastructureService\TaskServerGrpcAdapter;
 
-use App\InfrastructureService\TriggerHookService\BusMessage\TaskExecuteMessage;
-use App\InfrastructureService\TriggerHookService\Event\TaskExecuteEvent;
+use App\InfrastructureService\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage;
+use App\InfrastructureService\TaskServerGrpcAdapter\Event\TaskExecuteEvent;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
