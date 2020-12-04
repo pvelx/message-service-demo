@@ -22,7 +22,7 @@ services:
       - '../src/Entity/'
       - '../src/Kernel.php'
       - '../src/Tests/'
-      - '../src/DomainService/TaskService/Entity'
+      - '../src/Service/TaskService/Entity'
 
   # controllers are imported separately to make sure services can be injected
   # as action arguments even if you don't extend any base controller class
@@ -33,29 +33,29 @@ services:
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
 
-  App\InfrastructureService\TaskServerGrpcAdapter\TaskServerGrpcAdapter:
+  App\Service\TaskServerGrpcAdapter\TaskServerGrpcAdapter:
     arguments:
       $host: '%env(TASK_GRPC_SERVER_HOST)%'
 
-  App\DomainService\TaskService\Contract\DelayServiceInterface:
-    alias: App\InfrastructureService\TaskServerGrpcAdapter\TaskServerGrpcAdapter
+  App\Service\TaskService\Contract\DelayServiceInterface:
+    alias: App\Service\TaskServerGrpcAdapter\TaskServerGrpcAdapter
 
 
   task_server_grpc_adapter.serializer:
     class: App\Serializer\AmqpMessageSerializer
     arguments:
-      $messageClass: App\InfrastructureService\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage
+      $messageClass: App\Service\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage
 
 
-  App\DomainService\TaskService\TaskService:
+  App\Service\TaskService\TaskService:
     tags:
       - name: kernel.event_listener
-        event: App\InfrastructureService\TaskServerGrpcAdapter\Event\TaskExecuteEvent
+        event: App\Service\TaskServerGrpcAdapter\Event\TaskExecuteEvent
         method: onTaskExecuteEvent
 
 
   App\Domain\Push\PushManager:
     tags:
       - name: kernel.event_listener
-        event: App\DomainService\TaskService\Event\SendingTimePushTriggeredEvent
+        event: App\Service\TaskService\Event\SendingTimePushTriggeredEvent
         method: onSendingTimePushTriggeredEvent

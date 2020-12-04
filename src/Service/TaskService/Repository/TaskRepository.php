@@ -1,9 +1,9 @@
 <?php
 
-namespace App\DomainService\TaskService\Repository;
+namespace App\Service\TaskService\Repository;
 
 
-use App\DomainService\TaskService\Entity\Task;
+use App\Service\TaskService\Entity\Task;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

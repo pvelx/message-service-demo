@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\DomainService\TaskService\Config;
-use App\DomainService\TaskService\TaskService;
-use App\InfrastructureService\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage;
+use App\Service\TaskService\Config;
+use App\Service\TaskService\TaskService;
+use App\Service\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

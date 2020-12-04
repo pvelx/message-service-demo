@@ -1,15 +1,15 @@
 <?php
 
 
-namespace App\DomainService\TaskService;
+namespace App\Service\TaskService;
 
-use App\DomainService\TaskService\Contract\DeferredServiceExceptionInterface;
-use App\DomainService\TaskService\Contract\DelayServiceInterface;
-use App\DomainService\TaskService\Entity\Task;
-use App\DomainService\TaskService\Event\TaskCanceledEvent;
-use App\DomainService\TaskService\Event\TaskCreatedEvent;
-use App\DomainService\TaskService\Repository\TaskRepository;
-use App\InfrastructureService\TaskServerGrpcAdapter\Event\TaskExecuteEvent;
+use App\Service\TaskService\Contract\DeferredServiceExceptionInterface;
+use App\Service\TaskService\Contract\DelayServiceInterface;
+use App\Service\TaskService\Entity\Task;
+use App\Service\TaskService\Event\TaskCanceledEvent;
+use App\Service\TaskService\Event\TaskCreatedEvent;
+use App\Service\TaskService\Repository\TaskRepository;
+use App\Service\TaskServerGrpcAdapter\Event\TaskExecuteEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMException;
 use LogicException;

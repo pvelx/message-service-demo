@@ -1,11 +1,11 @@
 <?php
 
 
-namespace App\InfrastructureService\TaskServerGrpcAdapter;
+namespace App\Service\TaskServerGrpcAdapter;
 
 
-use App\DomainService\TaskService\Contract\DelayServiceInterface;
-use App\InfrastructureService\TaskServerGrpcAdapter\Exception\TaskDeferredServiceException;
+use App\Service\TaskService\Contract\DelayServiceInterface;
+use App\Service\TaskServerGrpcAdapter\Exception\TaskDeferredServiceException;
 use Grpc\ChannelCredentials;
 use Proto\Request;
 use Proto\Response;

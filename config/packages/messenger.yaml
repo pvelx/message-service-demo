@@ -20,4 +20,4 @@ framework:
       # sync: 'sync://'
 
     routing:
-      'App\InfrastructureService\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage': async
+      'App\Service\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage': async

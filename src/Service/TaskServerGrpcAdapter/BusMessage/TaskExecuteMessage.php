@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\InfrastructureService\TaskServerGrpcAdapter\BusMessage;
+namespace App\Service\TaskServerGrpcAdapter\BusMessage;
 
 
 class TaskExecuteMessage

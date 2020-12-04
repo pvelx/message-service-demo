@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\DomainService\TaskService\Event;
+namespace App\Service\TaskService\Event;
 
 
 use App\Domain\Push\Contract\SendingTimePushTriggeredEventInterface;

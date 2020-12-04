@@ -1,11 +1,11 @@
 <?php
 
 
-namespace App\DomainService\TaskService;
+namespace App\Service\TaskService;
 
 
-use App\DomainService\TaskService\Event\BaseEvent;
-use App\DomainService\TaskService\Event\SendingTimePushTriggeredEvent;
+use App\Service\TaskService\Event\BaseEvent;
+use App\Service\TaskService\Event\SendingTimePushTriggeredEvent;
 
 class Config
 {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\DomainService\TaskService\Contract;
+namespace App\Service\TaskService\Contract;
 
 use Proto\Request;
 use Proto\Response;

@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\DomainService\TaskService\Event;
+namespace App\Service\TaskService\Event;
 
 
-use App\DomainService\TaskService\Entity\Task;
+use App\Service\TaskService\Entity\Task;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class TaskCreatedEvent extends Event
+class TaskCanceledEvent extends Event
 {
     private $task;
 

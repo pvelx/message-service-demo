@@ -1,9 +1,9 @@
 <?php
 
-namespace App\DomainService\TaskService\Entity;
+namespace App\Service\TaskService\Entity;
 
 use App\Doctrine\StateMachineExtension;
-use App\DomainService\TaskService\Repository\TaskRepository;
+use App\Service\TaskService\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

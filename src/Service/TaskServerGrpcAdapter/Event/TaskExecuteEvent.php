@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\InfrastructureService\TaskServerGrpcAdapter\Event;
+namespace App\Service\TaskServerGrpcAdapter\Event;
 
 
 use Symfony\Contracts\EventDispatcher\Event;
