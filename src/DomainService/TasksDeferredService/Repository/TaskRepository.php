@@ -29,6 +29,17 @@ class TaskRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findOneByTaskTypeAndEntityId(string $taskType, int $entityId): ?Task
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.taskType = :taskType')
+            ->andWhere('t.entityId = :entityId')
+            ->setParameter('taskType', $taskType)
+            ->setParameter('entityId', $entityId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     // /**
     //  * @return Task[] Returns an array of Task objects
     //  */

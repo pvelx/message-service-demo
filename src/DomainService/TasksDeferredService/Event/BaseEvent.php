@@ -6,22 +6,25 @@ namespace App\DomainService\TasksDeferredService\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 
-abstract class BaseEvent extends Event
+class BaseEvent extends Event
 {
     private $entityId;
 
-    public function __construct(int $entityId)
+    private $taskId;
+
+    public function __construct(int $taskId, $entityId)
     {
+        $this->taskId = $taskId;
         $this->entityId = $entityId;
     }
 
-    /**
-     * @return int
-     */
     public function getEntityId(): int
     {
-        return $this->getEntityId();
+        return $this->entityId;
     }
 
-    abstract public function getEntityClassName(): string;
+    public function getTaskId(): int
+    {
+        return $this->taskId;
+    }
 }

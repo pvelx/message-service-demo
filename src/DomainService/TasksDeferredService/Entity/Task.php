@@ -2,6 +2,7 @@
 
 namespace App\DomainService\TasksDeferredService\Entity;
 
+use App\Doctrine\StateMachineExtension;
 use App\DomainService\TasksDeferredService\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,9 +11,23 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Task
 {
+    use StateMachineExtension;
+
     const STATUS_PENDING = 'pending';
+    const STATUS_CANCELED = 'canceled';
     const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED = 'failed';
+
+    private static $statusStateMachine = [
+        self::STATUS_PENDING => [
+            self::STATUS_CANCELED => [
+                self::STATUS_FAILED => null
+            ],
+            self::STATUS_COMPLETED => [
+                self::STATUS_FAILED => null
+            ]
+        ]
+    ];
 
     /**
      * @ORM\Id
@@ -73,6 +88,11 @@ class Task
         $this->externalId = $externalId;
 
         return $this;
+    }
+
+    public function isValidNewStatus(string $newStatus): bool
+    {
+        return $this->isValidChangeState(self::$statusStateMachine, $this->getStatus(), $newStatus);
     }
 
     public function getStatus(): ?string

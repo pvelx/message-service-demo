@@ -4,11 +4,12 @@
 namespace App\DomainService\TasksDeferredService\Event;
 
 
-class SendingTimePushTriggeredEvent extends BaseEvent
+use App\Domain\Push\Contract\SendingTimePushTriggeredEventInterface;
+
+class SendingTimePushTriggeredEvent extends BaseEvent implements SendingTimePushTriggeredEventInterface
 {
-    public function getEntityClassName(): string
+    public function getPushId(): int
     {
-        return '';
-//        return Push::class;
+        return $this->getEntityId();
     }
 }

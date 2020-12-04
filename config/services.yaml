@@ -52,3 +52,10 @@ services:
       - name: kernel.event_listener
         event: App\InfrastructureService\TriggerHookService\Event\TaskExecuteEvent
         method: onTaskExecuteEvent
+
+
+  App\Domain\Push\PushManager:
+    tags:
+      - name: kernel.event_listener
+        event: App\DomainService\TasksDeferredService\Event\SendingTimePushTriggeredEvent
+        method: onSendingTimePushTriggeredEvent
