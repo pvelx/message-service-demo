@@ -3,19 +3,28 @@
 
 namespace App\Domain\Message\Dto;
 
-
+use JMS\Serializer\Annotation as JMS;
 use DateTime;
 
 class ScheduleSendingMessage
 {
 
-    /** @var string */
+    /**
+     * @var string
+     * @JMS\Type("string")
+     */
     private $text;
 
-    /** @var string */
+    /**
+     * @var string
+     * @JMS\Type("string")
+     */
     private $email;
 
-    /** @var DateTime */
+    /**
+     * @var DateTime
+     * @JMS\Type("DateTime<'Y-m-d H:i:s'>")
+     */
     private $execTime;
 
     /**

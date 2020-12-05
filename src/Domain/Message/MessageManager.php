@@ -18,6 +18,7 @@ use Doctrine\ORM\ORMException;
 use Exception;
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Throwable;
 
 class MessageManager
 {
@@ -52,7 +53,8 @@ class MessageManager
             $message = (new Message())
                 ->setStatus(Message::STATUS_PENDING)
                 ->setText($data->getText())
-                ->setEmail($data->getEmail());
+                ->setEmail($data->getEmail())
+                ->setExecTime($data->getExecTime());
 
             $this->entityManager->persist($message);
             $this->entityManager->flush();
@@ -62,7 +64,7 @@ class MessageManager
 
             $this->entityManager->commit();
             return new MessageScheduledEvent($message);
-        } catch (ORMException | Exception $exception) {
+        } catch (ORMException | Throwable $exception) {
             $this->entityManager->rollback();
             throw new MessageManagerException();
         }
@@ -89,7 +91,11 @@ class MessageManager
 
             $task = $this->tasksDeferredService
                 ->getTaskByTaskTypeAndEntity(Config::TASK_TYPE_SENDING_PUSH, $message->getId());
-            $this->tasksDeferredService->cancel($task);
+            if ($task) {
+                $this->tasksDeferredService->cancel($task);
+            } else {
+                //log warning
+            }
 
             $this->entityManager->commit();
             return new MessageScheduledEvent($message);
@@ -107,7 +113,16 @@ class MessageManager
      */
     public function getMessages($limit, $offset): array
     {
-        return $this->messageRepository->findBy(null, null, $limit, $offset);
+        return $this->messageRepository->findBy([], [], $limit, $offset);
+    }
+
+    /**
+     * @param int $id
+     * @return Message|null
+     */
+    public function getMessage(int $id): ?Message
+    {
+        return $this->messageRepository->find($id);
     }
 
     /**
