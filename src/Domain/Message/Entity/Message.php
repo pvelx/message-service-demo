@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Domain\Push\Entity;
+namespace App\Domain\Message\Entity;
 
 use App\Doctrine\StateMachineExtension;
-use App\Domain\Push\Repository\PushRepository;
+use App\Domain\Message\Repository\MessageRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=PushRepository::class)
+ * @ORM\Entity(repositoryClass=MessageRepository::class)
  */
-class Push
+class Message
 {
     use StateMachineExtension;
 

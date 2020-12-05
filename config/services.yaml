@@ -54,8 +54,8 @@ services:
         method: onTaskExecuteEvent
 
 
-  App\Domain\Push\PushManager:
+  App\Domain\Message\MessageManager:
     tags:
       - name: kernel.event_listener
-        event: App\Service\TaskService\Event\SendingTimePushTriggeredEvent
-        method: onSendingTimePushTriggeredEvent
+        event: App\Service\TaskService\Event\SendingTimeMessageTriggeredEvent
+        method: onSendingTimeMessageTriggeredEvent

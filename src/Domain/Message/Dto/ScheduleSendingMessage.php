@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\Domain\Push\Dto;
+namespace App\Domain\Message\Dto;
 
 
 use DateTime;
 
-class ScheduleSendingPush
+class ScheduleSendingMessage
 {
 
     /** @var string */
@@ -19,7 +19,7 @@ class ScheduleSendingPush
     private $execTime;
 
     /**
-     * ScheduleSendingPush constructor.
+     * ScheduleSendingMessage constructor.
      * @param string $message
      * @param int $userId
      * @param DateTime $execTime

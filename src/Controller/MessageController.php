@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PushController extends AbstractController
+class MessageController extends AbstractController
 {
     private $tasksDeferredService;
     private $bus;
@@ -23,7 +23,7 @@ class PushController extends AbstractController
     }
 
     /**
-     * @Route("/push", name="create")
+     * @Route("/message", name="create")
      * @return Response
      * @throws \Exception
      */

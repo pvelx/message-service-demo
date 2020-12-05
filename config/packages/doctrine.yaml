@@ -16,9 +16,9 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Service/TaskService/Entity'
                 prefix: 'App\Service\TaskService\Entity'
                 alias: DeferredTask
-            Push:
+            Message:
                 is_bundle: false
                 type: annotation
-                dir: '%kernel.project_dir%/src/Domain/Push/Entity'
-                prefix: 'App\Domain\Push\Entity'
-                alias: Push
+                dir: '%kernel.project_dir%/src/Domain/Message/Entity'
+                prefix: 'App\Domain\Message\Entity'
+                alias: Message
