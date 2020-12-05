@@ -75,7 +75,7 @@ class TaskService
      * @param int $entityId
      * @return Task|null
      */
-    public function getTaskByTaskTypeAndEntity(string $taskType, int $entityId): ?Task
+    public function getTaskByTypeAndEntityId(string $taskType, int $entityId): ?Task
     {
         return $this->repository->findOneByTaskTypeAndEntityId($taskType, $entityId);
     }

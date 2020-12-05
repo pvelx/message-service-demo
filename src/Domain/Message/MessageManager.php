@@ -3,7 +3,6 @@
 
 namespace App\Domain\Message;
 
-
 use App\Domain\Message\Contract\SendingTimeMessageTriggeredEventInterface;
 use App\Domain\Message\Dto\ScheduleSendingMessage;
 use App\Domain\Message\Entity\Message;
@@ -14,30 +13,34 @@ use App\Domain\Message\Repository\MessageRepository;
 use App\Service\TaskService\Config;
 use App\Service\TaskService\TaskService;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMException;
 use Exception;
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class MessageManager
 {
-    private $tasksDeferredService;
+    private $taskService;
     private $entityManager;
     private $eventDispatcher;
     private $messageRepository;
+    private $logger;
 
     public function __construct(
-        TaskService $tasksDeferredService,
+        TaskService $taskService,
         EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher,
-        MessageRepository $messageRepository
+        MessageRepository $messageRepository,
+        LoggerInterface $logger
     )
     {
-        $this->tasksDeferredService = $tasksDeferredService;
+        $this->taskService = $taskService;
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->messageRepository = $messageRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -59,14 +62,15 @@ class MessageManager
             $this->entityManager->persist($message);
             $this->entityManager->flush();
 
-            $this->tasksDeferredService
-                ->create($data->getExecTime(), Config::TASK_TYPE_SENDING_PUSH, $message->getId());
+            $this->taskService->create($data->getExecTime(), Config::TASK_TYPE_SENDING_PUSH, $message->getId());
 
             $this->entityManager->commit();
             return new MessageScheduledEvent($message);
-        } catch (ORMException | Throwable $exception) {
+        } catch (Throwable $e) {
             $this->entityManager->rollback();
-            throw new MessageManagerException();
+            $error = 'Error while schedule new message';
+            $this->logger->error($error, ['exception' => $e, 'method' => __METHOD__]);
+            throw new MessageManagerException($error);
         }
     }
 
@@ -81,7 +85,7 @@ class MessageManager
             $this->entityManager->beginTransaction();
 
             if (!$message->isValidNewStatus(Message::STATUS_CANCELED)) {
-                throw new LogicException();
+                throw new LogicException('Status is not valid');
             }
 
             $message->setStatus(Message::STATUS_CANCELED);
@@ -89,20 +93,27 @@ class MessageManager
             $this->entityManager->persist($message);
             $this->entityManager->flush();
 
-            $task = $this->tasksDeferredService
-                ->getTaskByTaskTypeAndEntity(Config::TASK_TYPE_SENDING_PUSH, $message->getId());
-            if ($task) {
-                $this->tasksDeferredService->cancel($task);
-            } else {
-                //log warning
+            $task = $this->taskService->getTaskByTypeAndEntityId(Config::TASK_TYPE_SENDING_PUSH, $message->getId());
+            if ($task === null) {
+                throw new NotFoundHttpException('Task for the message does not exist');
             }
+
+            $this->taskService->cancel($task);
 
             $this->entityManager->commit();
             return new MessageScheduledEvent($message);
 
-        } catch (ORMException | Exception | LogicException $exception) {
+        } catch (LogicException $e) {
             $this->entityManager->rollback();
-            throw new MessageManagerException();
+            $m = sprintf('Logic was violated %s', $e->getMessage());
+            $this->logger->warning($m, ['exception' => $e, 'method' => __METHOD__, 'entityId' => $message->getId()]);
+            throw new MessageManagerException($m);
+
+        } catch (Throwable $e) {
+            $this->entityManager->rollback();
+            $m = 'Error while cancel sending message';
+            $this->logger->error($m, ['exception' => $e, 'method' => __METHOD__, 'entityId' => $message->getId()]);
+            throw new MessageManagerException($m);
         }
     }
 
@@ -130,13 +141,16 @@ class MessageManager
      */
     public function onSendingTimeMessageTriggeredEvent(SendingTimeMessageTriggeredEventInterface $event)
     {
-        $message = $this->messageRepository->find($event->getMessageId());
-
         try {
             $this->entityManager->beginTransaction();
 
+            $message = $this->messageRepository->find($event->getMessageId());
+            if (null === $message) {
+                throw new NotFoundHttpException('The message does not exist');
+            }
+
             if (!$message->isValidNewStatus(Message::STATUS_SHIPPED)) {
-                throw new LogicException();
+                throw new LogicException('Status violate logic of state transition');
             }
 
             $message->setStatus(Message::STATUS_SHIPPED);
@@ -146,12 +160,13 @@ class MessageManager
 
             //use api to send
 
+
             $this->entityManager->commit();
             $this->eventDispatcher->dispatch(new MessageShippedEvent($message));
-
-        } catch (ORMException | Exception | LogicException $exception) {
+        } catch (Throwable $e) {
             $this->entityManager->rollback();
-            //log
+            $m = 'Error while handle event from task service';
+            $this->logger->error($m, ['exception' => $e, 'method' => __METHOD__, 'entityId' => $event->getMessageId()]);
         }
     }
 }
