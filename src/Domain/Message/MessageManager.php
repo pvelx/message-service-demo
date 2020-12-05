@@ -3,11 +3,14 @@
 
 namespace App\Domain\Message;
 
+use App\Contract\Mailer\MailerExceptionInterface;
+use App\Contract\Mailer\MailerInterface;
 use App\Domain\Message\Contract\SendingTimeMessageTriggeredEventInterface;
 use App\Domain\Message\Dto\ScheduleSendingMessage;
 use App\Domain\Message\Entity\Message;
 use App\Domain\Message\Event\MessageScheduledEvent;
 use App\Domain\Message\Event\MessageShippedEvent;
+use App\Domain\Message\Event\MessageShippingFailedEvent;
 use App\Domain\Message\Exception\MessageManagerException;
 use App\Domain\Message\Repository\MessageRepository;
 use App\Service\TaskService\Config;
@@ -27,12 +30,14 @@ class MessageManager
     private $eventDispatcher;
     private $messageRepository;
     private $logger;
+    private $mailer;
 
     public function __construct(
         TaskService $taskService,
         EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher,
         MessageRepository $messageRepository,
+        MailerInterface $mailer,
         LoggerInterface $logger
     )
     {
@@ -40,6 +45,7 @@ class MessageManager
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->messageRepository = $messageRepository;
+        $this->mailer = $mailer;
         $this->logger = $logger;
     }
 
@@ -69,7 +75,7 @@ class MessageManager
         } catch (Throwable $e) {
             $this->entityManager->rollback();
             $error = 'Error while schedule new message';
-            $this->logger->error($error, ['exception' => $e, 'method' => __METHOD__]);
+            $this->logger->error($error, ['exception' => $e, 'method' => __METHOD__, 'data' => $data]);
             throw new MessageManagerException($error);
         }
     }
@@ -155,14 +161,18 @@ class MessageManager
 
             $message->setStatus(Message::STATUS_SHIPPED);
 
+            try {
+                $this->mailer->send($message->getEmail(), $message->getText());
+                $event = new MessageShippedEvent($message);
+            } catch (MailerExceptionInterface $e) {
+                $message->setStatus(Message::STATUS_SHIPPING_FAILED);
+                $event = new MessageShippingFailedEvent($message);
+            }
+
             $this->entityManager->persist($message);
             $this->entityManager->flush();
-
-            //use api to send
-
-
             $this->entityManager->commit();
-            $this->eventDispatcher->dispatch(new MessageShippedEvent($message));
+            $this->eventDispatcher->dispatch($event);
         } catch (Throwable $e) {
             $this->entityManager->rollback();
             $m = 'Error while handle event from task service';

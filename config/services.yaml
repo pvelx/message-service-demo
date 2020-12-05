@@ -40,12 +40,10 @@ services:
   App\Service\TaskService\Contract\DelayServiceInterface:
     alias: App\Service\TaskServerGrpcAdapter\TaskServerGrpcAdapter
 
-
   task_server_grpc_adapter.serializer:
     class: App\Serializer\AmqpMessageSerializer
     arguments:
       $messageClass: App\Service\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage
-
 
   App\Service\TaskService\TaskService:
     tags:
@@ -53,9 +51,11 @@ services:
         event: App\Service\TaskServerGrpcAdapter\Event\TaskExecuteEvent
         method: onTaskExecuteEvent
 
-
   App\Domain\Message\MessageManager:
     tags:
       - name: kernel.event_listener
         event: App\Service\TaskService\Event\SendingTimeMessageTriggeredEvent
         method: onSendingTimeMessageTriggeredEvent
+
+  App\Contract\Mailer\MailerInterface:
+    class: App\Service\MailerMockService\MailerMockService

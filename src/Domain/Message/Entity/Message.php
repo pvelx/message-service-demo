@@ -18,17 +18,17 @@ class Message
 
     const STATUS_PENDING = 'pending';
     const STATUS_SHIPPED = 'shipped';
+    const STATUS_SHIPPING_FAILED = 'shipping_failed';
     const STATUS_CANCELED = 'canceled';
+    const STATUS_CANCELING_FAILED = 'canceling_failed';
     const STATUS_FAILED = 'failed';
 
     private static $statusStateMachine = [
         self::STATUS_PENDING => [
-            self::STATUS_SHIPPED => [
-                self::STATUS_FAILED => null
-            ],
-            self::STATUS_CANCELED => [
-                self::STATUS_FAILED => null
-            ]
+            self::STATUS_SHIPPED => null,
+            self::STATUS_SHIPPING_FAILED => null,
+            self::STATUS_CANCELED => null,
+            self::STATUS_CANCELING_FAILED => null,
         ]
     ];
 
