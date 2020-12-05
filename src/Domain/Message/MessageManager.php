@@ -51,8 +51,8 @@ class MessageManager
 
             $message = (new Message())
                 ->setStatus(Message::STATUS_PENDING)
-                ->setMessage($data->getMessage())
-                ->setUserId($data->getUserId());
+                ->setText($data->getText())
+                ->setEmail($data->getEmail());
 
             $this->entityManager->persist($message);
             $this->entityManager->flush();

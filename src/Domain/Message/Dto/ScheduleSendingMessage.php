@@ -10,41 +10,41 @@ class ScheduleSendingMessage
 {
 
     /** @var string */
-    private $message;
+    private $text;
 
-    /** @var int */
-    private $userId;
+    /** @var string */
+    private $email;
 
     /** @var DateTime */
     private $execTime;
 
     /**
      * ScheduleSendingMessage constructor.
-     * @param string $message
-     * @param int $userId
+     * @param string $text
+     * @param string $email
      * @param DateTime $execTime
      */
-    public function __construct(string $message, int $userId, DateTime $execTime)
+    public function __construct(string $text, string $email, DateTime $execTime)
     {
-        $this->message = $message;
-        $this->userId = $userId;
+        $this->text = $text;
+        $this->email = $email;
         $this->execTime = $execTime;
     }
 
     /**
      * @return string
      */
-    public function getMessage(): string
+    public function getText(): string
     {
-        return $this->message;
+        return $this->text;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getUserId(): int
+    public function getEmail(): string
     {
-        return $this->userId;
+        return $this->email;
     }
 
     /**

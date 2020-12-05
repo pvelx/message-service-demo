@@ -39,7 +39,7 @@ class Message
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $message;
+    private $text;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -47,9 +47,9 @@ class Message
     private $status;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
      */
-    private $userId;
+    private $email;
 
     public function getId(): ?int
     {
@@ -61,14 +61,14 @@ class Message
         return $this->isValidChangeState(self::$statusStateMachine, $this->getStatus(), $newStatus);
     }
 
-    public function getMessage(): ?string
+    public function getText(): ?string
     {
-        return $this->message;
+        return $this->text;
     }
 
-    public function setMessage(string $message): self
+    public function setText(string $text): self
     {
-        $this->message = $message;
+        $this->text = $text;
 
         return $this;
     }
@@ -85,14 +85,14 @@ class Message
         return $this;
     }
 
-    public function getUserId(): ?int
+    public function getEmail(): ?string
     {
-        return $this->userId;
+        return $this->email;
     }
 
-    public function setUserId(int $userId): self
+    public function setEmail(int $email): self
     {
-        $this->userId = $userId;
+        $this->email = $email;
 
         return $this;
     }
