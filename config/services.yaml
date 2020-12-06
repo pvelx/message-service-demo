@@ -37,7 +37,7 @@ services:
     arguments:
       $host: '%env(TASK_GRPC_SERVER_HOST)%'
 
-  App\Service\TaskService\Contract\DelayServiceInterface:
+  App\Contract\TaskServerAdapter\TaskServerAdapterInterface:
     alias: App\Service\TaskServerGrpcAdapter\TaskServerGrpcAdapter
 
   task_server_grpc_adapter.serializer:

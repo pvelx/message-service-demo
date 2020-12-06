@@ -1,17 +1,18 @@
 <?php
 
 
-namespace App\Service\TaskService\Contract;
+namespace App\Contract\TaskServerAdapter;
 
 use Proto\Request;
 use Proto\Response;
 
-interface DelayServiceInterface
+//TaskServerAdapter
+interface TaskServerAdapterInterface
 {
     /**
      * @param Request $request
      * @return Response
-     * @throws DeferredServiceExceptionInterface
+     * @throws TaskServerAdapterExceptionInterface
      */
     public function create(Request $request): Response;
 }

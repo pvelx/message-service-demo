@@ -4,9 +4,7 @@
 namespace App\Domain\Message\Exception;
 
 
-use Exception;
-
-class MessageManagerException extends Exception
+class MessageManagerException extends \Error
 {
 
 }

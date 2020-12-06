@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Domain\Message\Contract;
+namespace App\Contract\TaskService\Event;
 
 
 interface SendingTimeMessageTriggeredEventInterface

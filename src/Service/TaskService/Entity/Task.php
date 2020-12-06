@@ -4,6 +4,7 @@ namespace App\Service\TaskService\Entity;
 
 use App\Doctrine\StateMachineExtension;
 use App\Service\TaskService\Repository\TaskRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -57,7 +58,7 @@ class Task
     private $status;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="datetime")
      */
     private $execTime;
 
@@ -126,18 +127,18 @@ class Task
     }
 
     /**
-     * @return int
+     * @return DateTime
      */
-    public function getExecTime(): int
+    public function getExecTime(): DateTime
     {
         return $this->execTime;
     }
 
     /**
-     * @param int $execTime
+     * @param DateTime $execTime
      * @return Task
      */
-    public function setExecTime(int $execTime)
+    public function setExecTime(DateTime $execTime)
     {
         $this->execTime = $execTime;
         return $this;

@@ -5,7 +5,8 @@ namespace App\Domain\Message;
 
 use App\Contract\Mailer\MailerExceptionInterface;
 use App\Contract\Mailer\MailerInterface;
-use App\Domain\Message\Contract\SendingTimeMessageTriggeredEventInterface;
+use App\Contract\TaskService\Event\SendingTimeMessageTriggeredEventInterface;
+use App\Contract\TaskService\TaskServiceInterface;
 use App\Domain\Message\Dto\ScheduleSendingMessage;
 use App\Domain\Message\Entity\Message;
 use App\Domain\Message\Event\MessageScheduledEvent;
@@ -14,9 +15,7 @@ use App\Domain\Message\Event\MessageShippingFailedEvent;
 use App\Domain\Message\Exception\MessageManagerException;
 use App\Domain\Message\Repository\MessageRepository;
 use App\Service\TaskService\Config;
-use App\Service\TaskService\TaskService;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use LogicException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -33,7 +32,7 @@ class MessageManager
     private $mailer;
 
     public function __construct(
-        TaskService $taskService,
+        TaskServiceInterface $taskService,
         EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher,
         MessageRepository $messageRepository,
@@ -52,7 +51,7 @@ class MessageManager
     /**
      * @param ScheduleSendingMessage $data
      * @return MessageScheduledEvent
-     * @throws Exception
+     * @throws MessageManagerException
      */
     public function scheduleSending(ScheduleSendingMessage $data)
     {
@@ -83,7 +82,7 @@ class MessageManager
     /**
      * @param Message $message
      * @return MessageScheduledEvent
-     * @throws Exception
+     * @throws MessageManagerException
      */
     public function cancelSending(Message $message)
     {
@@ -99,12 +98,7 @@ class MessageManager
             $this->entityManager->persist($message);
             $this->entityManager->flush();
 
-            $task = $this->taskService->getTaskByTypeAndEntityId(Config::TASK_TYPE_SENDING_PUSH, $message->getId());
-            if ($task === null) {
-                throw new NotFoundHttpException('Task for the message does not exist');
-            }
-
-            $this->taskService->cancel($task);
+            $this->taskService->cancel(Config::TASK_TYPE_SENDING_PUSH, $message->getId());
 
             $this->entityManager->commit();
             return new MessageScheduledEvent($message);

@@ -3,37 +3,44 @@
 
 namespace App\Service\TaskService;
 
-use App\Service\TaskService\Contract\DeferredServiceExceptionInterface;
-use App\Service\TaskService\Contract\DelayServiceInterface;
+use App\Contract\TaskServerAdapter\TaskServerAdapterInterface;
+use App\Contract\TaskService\TaskServiceInterface;
 use App\Service\TaskService\Entity\Task;
 use App\Service\TaskService\Event\TaskCanceledEvent;
 use App\Service\TaskService\Event\TaskCreatedEvent;
+use App\Service\TaskService\Exception\TaskServiceException;
 use App\Service\TaskService\Repository\TaskRepository;
 use App\Service\TaskServerGrpcAdapter\Event\TaskExecuteEvent;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\ORMException;
+use Doctrine\ORM\EntityNotFoundException;
 use LogicException;
 use Proto\Request;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Throwable;
 
-class TaskService
+class TaskService implements TaskServiceInterface
 {
-    private $delayService;
+    private $taskServerAdapter;
     private $entityManager;
     private $eventDispatcher;
     private $repository;
+    private $logger;
 
     public function __construct(
-        DelayServiceInterface $delayService,
+        TaskServerAdapterInterface $taskServerAdapter,
         EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher,
-        TaskRepository $repository
+        TaskRepository $repository,
+        LoggerInterface $logger
     )
     {
-        $this->delayService = $delayService;
+        $this->taskServerAdapter = $taskServerAdapter;
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->repository = $repository;
+        $this->logger = $logger;
     }
 
     /**
@@ -41,16 +48,17 @@ class TaskService
      * @param $taskType
      * @param $entityId
      * @return TaskCreatedEvent
-     * @throws \Exception
+     * @throws TaskServiceException
      */
-    public function create($execTime, $taskType, $entityId)
+    public function create(DateTime $execTime, string $taskType, int $entityId): TaskCreatedEvent
     {
         try {
             $this->entityManager->beginTransaction();
 
             $request = new Request();
-            $request->setExecTime($execTime);
-            $response = $this->delayService->create($request);
+            $request->setExecTime($execTime->getTimestamp());
+
+            $response = $this->taskServerAdapter->create($request);
 
             $task = (new Task())
                 ->setStatus(Task::STATUS_PENDING)
@@ -64,34 +72,53 @@ class TaskService
             $this->entityManager->commit();
 
             return new TaskCreatedEvent($task);
-        } catch (DeferredServiceExceptionInterface | ORMException $exception) {
+        } catch (Throwable $e) {
             $this->entityManager->rollback();
-            throw new \Exception($exception);
+            $this->logger->error('Error creating the task', ['exception' => $e, 'method' => __METHOD__]);
+            throw new TaskServiceException($e);
         }
     }
 
     /**
      * @param string $taskType
      * @param int $entityId
-     * @return Task|null
-     */
-    public function getTaskByTypeAndEntityId(string $taskType, int $entityId): ?Task
-    {
-        return $this->repository->findOneByTaskTypeAndEntityId($taskType, $entityId);
-    }
-
-    /**
-     * @param Task $task
      * @return TaskCanceledEvent
-     * @throws \Exception
+     * @throws TaskServiceException
      */
-    public function cancel(Task $task): TaskCanceledEvent
+    public function cancel(string $taskType, int $entityId): TaskCanceledEvent
     {
         try {
-            $this->changeStatus($task, Task::STATUS_CANCELED);
+            $this->entityManager->beginTransaction();
+
+            $task = $this->repository->findOneByTaskTypeAndEntityId($taskType, $entityId);
+
+            if (null === $task) {
+                throw new EntityNotFoundException('Task does not exist');
+            }
+
+            if ($task->isValidNewStatus(Task::STATUS_CANCELED)) {
+                throw new LogicException('Status is not valid');
+            }
+
+            $task->setStatus(Task::STATUS_CANCELED);
+            $this->entityManager->persist($task);
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+
             return new TaskCanceledEvent($task);
-        } catch (ORMException | LogicException $exception) {
-            throw new \Exception($exception);
+        } catch (Throwable  $e) {
+            $this->entityManager->rollback();
+
+            $m = 'Error canceling of the task';
+            $context = ['exception' => $e, 'method' => __METHOD__, 'taskType' => $taskType, 'entityId' => $entityId];
+
+            if ($e instanceof EntityNotFoundException || $e instanceof LogicException) {
+                $this->logger->warning($m, $context);
+            } else {
+                $this->logger->error($m, $context);
+            }
+
+            throw new TaskServiceException($m);
         }
     }
 
@@ -100,38 +127,35 @@ class TaskService
      */
     public function onTaskExecuteEvent(TaskExecuteEvent $event): void
     {
-        $task = $this->repository->findOneByExternalId($event->getTaskId());
+        try {
+            $this->entityManager->beginTransaction();
+            $task = $this->repository->findOneByExternalId($event->getTaskId());
 
-        if ($task->getStatus() === Task::STATUS_PENDING) {
-            try {
-                $this->changeStatus($task, Task::STATUS_COMPLETED);
-                $eventClass = Config::getEventByType($task->getTaskType());
-                $this->eventDispatcher->dispatch(new $eventClass($task->getId(), $task->getEntityId()));
-            } catch (ORMException | \Exception $e) {
-                //log error
+            if (null === $task) {
+                throw new EntityNotFoundException('Task does not exist');
             }
+
+            if ($task->getStatus() === Task::STATUS_CANCELED) {
+                return;
+            }
+
+            if ($task->isValidNewStatus(Task::STATUS_COMPLETED)) {
+                throw new LogicException('Status is not valid');
+            }
+
+            $task->setStatus(Task::STATUS_COMPLETED);
+            $this->entityManager->persist($task);
+            $this->entityManager->flush();
+            $this->entityManager->commit();
+
+            $eventClass = Config::getEventByType($task->getTaskType());
+            $this->eventDispatcher->dispatch(new $eventClass($task->getId(), $task->getEntityId()));
+        } catch (Throwable $e) {
+            $this->entityManager->rollback();
+            $this->logger->error(
+                'Error while handle the task',
+                ['exception' => $e, 'method' => __METHOD__, 'entityId' => $event->getTaskId()]
+            );
         }
-    }
-
-    /**
-     * @param Task $task
-     * @param string $newStatus
-     * @return Task
-     * @throws ORMException
-     */
-    private function changeStatus(Task $task, string $newStatus)
-    {
-        $this->entityManager->beginTransaction();
-
-        if (!$task->isValidNewStatus($newStatus)) {
-            throw new LogicException();
-        }
-
-        $task->setStatus($newStatus);
-        $this->entityManager->persist($task);
-        $this->entityManager->flush();
-        $this->entityManager->commit();
-
-        return $task;
     }
 }

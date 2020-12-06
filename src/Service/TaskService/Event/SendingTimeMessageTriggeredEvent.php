@@ -4,7 +4,7 @@
 namespace App\Service\TaskService\Event;
 
 
-use App\Domain\Message\Contract\SendingTimeMessageTriggeredEventInterface;
+use App\Contract\TaskService\Event\SendingTimeMessageTriggeredEventInterface;
 
 class SendingTimeMessageTriggeredEvent extends BaseEvent implements SendingTimeMessageTriggeredEventInterface
 {

@@ -3,7 +3,6 @@
 
 namespace App\Service\TaskServerGrpcAdapter\Event;
 
-
 use Symfony\Contracts\EventDispatcher\Event;
 
 class TaskExecuteEvent extends Event
