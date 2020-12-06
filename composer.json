@@ -17,6 +17,7 @@
         "google/protobuf": "^3.14",
         "grpc/grpc": "^1.30",
         "jms/serializer-bundle": "^3.7",
+        "nelmio/cors-bundle": "^2.1",
         "phpdocumentor/reflection-docblock": "^5.2",
         "symfony/amqp-messenger": "5.2.*",
         "symfony/console": "5.2.*",
