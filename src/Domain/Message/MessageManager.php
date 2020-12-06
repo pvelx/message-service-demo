@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 
 namespace App\Domain\Message;
@@ -53,7 +53,7 @@ class MessageManager
      * @return MessageScheduledEvent
      * @throws MessageManagerException
      */
-    public function scheduleSending(ScheduleSendingMessage $data)
+    public function scheduleSending(ScheduleSendingMessage $data): MessageScheduledEvent
     {
         try {
             $this->entityManager->beginTransaction();
@@ -84,7 +84,7 @@ class MessageManager
      * @return MessageScheduledEvent
      * @throws MessageManagerException
      */
-    public function cancelSending(Message $message)
+    public function cancelSending(Message $message): MessageScheduledEvent
     {
         try {
             $this->entityManager->beginTransaction();

@@ -1,10 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 
 namespace App\Domain\Message\Event;
 
-
-use Symfony\Contracts\EventDispatcher\Event;
 
 class MessageShippedEvent extends BaseEvent
 {

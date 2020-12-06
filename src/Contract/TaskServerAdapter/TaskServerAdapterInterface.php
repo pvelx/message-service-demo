@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 
 namespace App\Contract\TaskServerAdapter;
@@ -6,7 +6,6 @@ namespace App\Contract\TaskServerAdapter;
 use Proto\Request;
 use Proto\Response;
 
-//TaskServerAdapter
 interface TaskServerAdapterInterface
 {
     /**
