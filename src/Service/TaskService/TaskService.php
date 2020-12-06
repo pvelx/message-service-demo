@@ -96,8 +96,12 @@ class TaskService implements TaskServiceInterface
                 throw new EntityNotFoundException('Task does not exist');
             }
 
-            if ($task->isValidNewStatus(Task::STATUS_CANCELED)) {
-                throw new LogicException('Status is not valid');
+            if (!$task->isValidNewStatus(Task::STATUS_CANCELED)) {
+                throw new LogicException(sprintf(
+                    'Status of the task is not valid. Current "%s", need "%s"',
+                    $task->getStatus(),
+                    Task::STATUS_CANCELED
+                ));
             }
 
             $task->setStatus(Task::STATUS_CANCELED);
@@ -139,8 +143,12 @@ class TaskService implements TaskServiceInterface
                 return;
             }
 
-            if ($task->isValidNewStatus(Task::STATUS_COMPLETED)) {
-                throw new LogicException('Status is not valid');
+            if (!$task->isValidNewStatus(Task::STATUS_COMPLETED)) {
+                throw new LogicException(sprintf(
+                    'Status of the task is not valid. Current "%s", need "%s"',
+                    $task->getStatus(),
+                    Task::STATUS_COMPLETED
+                ));
             }
 
             $task->setStatus(Task::STATUS_COMPLETED);

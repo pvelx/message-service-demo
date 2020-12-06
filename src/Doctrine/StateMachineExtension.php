@@ -15,7 +15,7 @@ trait StateMachineExtension
     private function isValidChangeState(array $stateMachine, $currentState, $newState)
     {
         if (isset($stateMachine[$currentState])) {
-            if (isset($stateMachine[$currentState][$newState])) {
+            if (key_exists($newState, $stateMachine[$currentState])) {
                 return true;
             }
         } else {

@@ -90,7 +90,11 @@ class MessageManager
             $this->entityManager->beginTransaction();
 
             if (!$message->isValidNewStatus(Message::STATUS_CANCELED)) {
-                throw new LogicException('Status is not valid');
+                throw new LogicException(sprintf(
+                    'Status of the message is not valid. Current "%s", need "%s"',
+                    $message->getStatus(),
+                    Message::STATUS_CANCELED
+                ));
             }
 
             $message->setStatus(Message::STATUS_CANCELED);
@@ -105,7 +109,7 @@ class MessageManager
 
         } catch (LogicException $e) {
             $this->entityManager->rollback();
-            $m = sprintf('Logic was violated %s', $e->getMessage());
+            $m = sprintf('Logic was violated. %s', $e->getMessage());
             $this->logger->warning($m, ['exception' => $e, 'method' => __METHOD__, 'entityId' => $message->getId()]);
             throw new MessageManagerException($m);
 
