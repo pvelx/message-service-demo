@@ -8,7 +8,7 @@ use App\Service\TaskServerGrpcAdapter\Event\TaskExecuteEvent;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class MessageHandler implements MessageHandlerInterface
+class AmqpMessageHandler implements MessageHandlerInterface
 {
     private $dispatcher;
 

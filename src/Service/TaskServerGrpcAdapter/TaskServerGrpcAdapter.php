@@ -9,6 +9,7 @@ use Grpc\ChannelCredentials;
 use Proto\Request;
 use Proto\Response;
 use Proto\TaskClient;
+use Throwable;
 
 class TaskServerGrpcAdapter implements TaskServerAdapterInterface
 {
@@ -26,8 +27,13 @@ class TaskServerGrpcAdapter implements TaskServerAdapterInterface
      */
     public function create(Request $taskRequest): Response
     {
-        /** @var Response $response */
-        list($response, $status) = $this->client->Create($taskRequest)->wait();
+        try {
+            /** @var Response $response */
+            list($response, $status) = $this->client->Create($taskRequest)->wait();
+        } catch (Throwable $e) {
+            throw new TaskServerGrpcAdapterException($e);
+        }
+
         if ($status->code !== \Grpc\STATUS_OK) {
             throw new TaskServerGrpcAdapterException(printf("ERROR: code:%s details:%s", $status->code, $status->details));
         }
