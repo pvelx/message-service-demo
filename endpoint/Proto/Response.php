@@ -14,17 +14,17 @@ use Google\Protobuf\Internal\GPBUtil;
 class Response extends \Google\Protobuf\Internal\Message
 {
     /**
-     * Generated from protobuf field <code>string status = 1;</code>
+     * Generated from protobuf field <code>string id = 1;</code>
+     */
+    protected $id = '';
+    /**
+     * Generated from protobuf field <code>string status = 2;</code>
      */
     protected $status = '';
     /**
-     * Generated from protobuf field <code>int64 code = 2;</code>
+     * Generated from protobuf field <code>int64 code = 3;</code>
      */
     protected $code = 0;
-    /**
-     * Generated from protobuf field <code>int64 id = 3;</code>
-     */
-    protected $id = 0;
 
     /**
      * Constructor.
@@ -32,9 +32,9 @@ class Response extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
+     *     @type string $id
      *     @type string $status
      *     @type int|string $code
-     *     @type int|string $id
      * }
      */
     public function __construct($data = NULL) {
@@ -43,7 +43,29 @@ class Response extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string status = 1;</code>
+     * Generated from protobuf field <code>string id = 1;</code>
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Generated from protobuf field <code>string id = 1;</code>
+     * @param string $var
+     * @return $this
+     */
+    public function setId($var)
+    {
+        GPBUtil::checkString($var, True);
+        $this->id = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>string status = 2;</code>
      * @return string
      */
     public function getStatus()
@@ -52,7 +74,7 @@ class Response extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string status = 1;</code>
+     * Generated from protobuf field <code>string status = 2;</code>
      * @param string $var
      * @return $this
      */
@@ -65,7 +87,7 @@ class Response extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>int64 code = 2;</code>
+     * Generated from protobuf field <code>int64 code = 3;</code>
      * @return int|string
      */
     public function getCode()
@@ -74,7 +96,7 @@ class Response extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>int64 code = 2;</code>
+     * Generated from protobuf field <code>int64 code = 3;</code>
      * @param int|string $var
      * @return $this
      */
@@ -82,28 +104,6 @@ class Response extends \Google\Protobuf\Internal\Message
     {
         GPBUtil::checkInt64($var);
         $this->code = $var;
-
-        return $this;
-    }
-
-    /**
-     * Generated from protobuf field <code>int64 id = 3;</code>
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Generated from protobuf field <code>int64 id = 3;</code>
-     * @param int|string $var
-     * @return $this
-     */
-    public function setId($var)
-    {
-        GPBUtil::checkInt64($var);
-        $this->id = $var;
 
         return $this;
     }

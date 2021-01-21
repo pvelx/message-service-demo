@@ -18,6 +18,7 @@ use LogicException;
 use Proto\Request;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Throwable;
 
 class TaskService implements TaskServiceInterface
@@ -102,6 +103,14 @@ class TaskService implements TaskServiceInterface
                     $task->getStatus(),
                     Task::STATUS_CANCELED
                 ));
+            }
+
+            $request = (new Request())
+                ->setId($task->getExternalId());
+
+            $response = $this->taskServerAdapter->delete($request);
+            if ($response->getStatus() != 'ok') {
+                throw new RuntimeException('Deleting in task server was failed');
             }
 
             $task->setStatus(Task::STATUS_CANCELED);

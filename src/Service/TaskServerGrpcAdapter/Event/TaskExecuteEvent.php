@@ -9,15 +9,15 @@ class TaskExecuteEvent extends Event
 {
     private $taskId;
 
-    public function __construct(int $taskId)
+    public function __construct(string $taskId)
     {
         $this->taskId = $taskId;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getTaskId(): int
+    public function getTaskId(): string
     {
         return $this->taskId;
     }

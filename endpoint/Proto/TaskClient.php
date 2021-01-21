@@ -30,4 +30,18 @@ class TaskClient extends \Grpc\BaseStub {
         $metadata, $options);
     }
 
+    /**
+     * @param \Proto\Request $argument input argument
+     * @param array $metadata metadata
+     * @param array $options call options
+     * @return \Grpc\UnaryCall
+     */
+    public function Delete(\Proto\Request $argument,
+      $metadata = [], $options = []) {
+        return $this->_simpleRequest('/proto.Task/Delete',
+        $argument,
+        ['\Proto\Response', 'decode'],
+        $metadata, $options);
+    }
+
 }

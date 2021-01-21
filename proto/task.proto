@@ -4,14 +4,16 @@ package proto;
 
 service Task {
     rpc Create(Request) returns (Response) {}
+    rpc Delete(Request) returns (Response) {}
 }
 
 message Request {
-    int64 execTime = 1;
+  string id = 1;
+  int64 execTime = 2;
 }
 
 message Response {
-    string status = 1;
-    int64 code = 2;
-    int64 id = 3;
+  string id = 1;
+  string status = 2;
+  int64 code = 3;
 }

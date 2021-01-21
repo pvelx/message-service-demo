@@ -10,10 +10,10 @@ framework:
         dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
         options:
           exchange:
-            name: image_resize_ex
+            name: task_execute_event
             type: fanout
           queues:
-            image_resize_qu:
+            task_execute_event:
 
 
       # failed: 'doctrine://default?queue_name=failed'

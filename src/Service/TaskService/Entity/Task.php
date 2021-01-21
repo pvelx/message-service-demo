@@ -48,7 +48,7 @@ class Task
     private $entityId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=36)
      */
     private $externalId;
 
@@ -79,12 +79,12 @@ class Task
         return $this;
     }
 
-    public function getExternalId(): ?int
+    public function getExternalId(): ?string
     {
         return $this->externalId;
     }
 
-    public function setExternalId(int $externalId): self
+    public function setExternalId(string $externalId): self
     {
         $this->externalId = $externalId;
 

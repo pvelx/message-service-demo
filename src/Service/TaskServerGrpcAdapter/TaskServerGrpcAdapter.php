@@ -27,15 +27,35 @@ class TaskServerGrpcAdapter implements TaskServerAdapterInterface
      */
     public function create(Request $taskRequest): Response
     {
+        return $this->call($taskRequest, 'Create');
+    }
+
+    /**
+     * @param Request $taskRequest
+     * @return Response
+     * @throws TaskServerGrpcAdapterException
+     */
+    public function delete(Request $taskRequest): Response
+    {
+        return $this->call($taskRequest, 'Delete');
+    }
+
+    /**
+     * @param Request $taskRequest
+     * @param string $method
+     * @return Response
+     */
+    private function call(Request $taskRequest, string $method): Response
+    {
         try {
             /** @var Response $response */
-            list($response, $status) = $this->client->Create($taskRequest)->wait();
+            list($response, $status) = $this->client->{$method}($taskRequest)->wait();
         } catch (Throwable $e) {
             throw new TaskServerGrpcAdapterException($e);
         }
 
         if ($status->code !== \Grpc\STATUS_OK) {
-            throw new TaskServerGrpcAdapterException(printf("ERROR: code:%s details:%s", $status->code, $status->details));
+            throw new TaskServerGrpcAdapterException(sprintf("ERROR: code:%s details:%s", $status->code, $status->details));
         }
 
         return $response;
