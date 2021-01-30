@@ -56,10 +56,10 @@ RUN docker-php-ext-enable grpc
 
 RUN apk add --no-cache supervisor
 RUN rm /etc/supervisord.conf
-COPY docker/php-fpm/supervisor/ /etc/supervisor/
+COPY supervisor/ /etc/supervisor/
 
 COPY . .
-COPY ./docker/php-fpm/dev/php.ini /usr/local/etc/php/php.ini
+COPY ./docker/php.ini /usr/local/etc/php/php.ini
 
 RUN composer install
 
