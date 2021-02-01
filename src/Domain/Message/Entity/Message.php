@@ -60,6 +60,7 @@ class Message
 
     /**
      * @ORM\Column(type="datetime")
+     * @JMS\Type("DateTime<'Y-m-d H:i:s'>")
      * @JMS\Expose()
      */
     private $execTime;
