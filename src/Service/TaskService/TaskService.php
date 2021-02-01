@@ -141,7 +141,6 @@ class TaskService implements TaskServiceInterface
     public function onTaskExecuteEvent(TaskExecuteEvent $event): void
     {
         try {
-            $this->entityManager->beginTransaction();
             $task = $this->repository->findOneByExternalId($event->getTaskId());
 
             if (null === $task) {
@@ -163,12 +162,10 @@ class TaskService implements TaskServiceInterface
             $task->setStatus(Task::STATUS_COMPLETED);
             $this->entityManager->persist($task);
             $this->entityManager->flush();
-            $this->entityManager->commit();
 
             $eventClass = Config::getEventByType($task->getTaskType());
             $this->eventDispatcher->dispatch(new $eventClass($task->getId(), $task->getEntityId()));
         } catch (Throwable $e) {
-            $this->entityManager->rollback();
             $this->logger->error(
                 'Error while handle the task',
                 ['exception' => $e, 'method' => __METHOD__, 'entityId' => $event->getTaskId()]
