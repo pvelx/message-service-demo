@@ -1,11 +1,10 @@
 <?php declare(strict_types=1);
 
 
-namespace App\Service\TaskServerGrpcAdapter\Event;
+namespace App\Service\TriggerServiceGrpcAdapter\BusMessage;
 
-use Symfony\Contracts\EventDispatcher\Event;
 
-class TaskExecuteEvent extends Event
+class TriggerExecutedMessage
 {
     private $taskId;
 

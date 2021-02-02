@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
 
-namespace App\Service\TaskServerGrpcAdapter;
+namespace App\Service\TriggerServiceGrpcAdapter;
 
-use App\Service\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage;
-use App\Service\TaskServerGrpcAdapter\Event\TaskExecuteEvent;
+use App\Service\TriggerServiceGrpcAdapter\BusMessage\TriggerExecutedMessage;
+use App\Service\TriggerServiceGrpcAdapter\Event\TriggerExecutedEvent;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -17,8 +17,8 @@ class AmqpMessageHandler implements MessageHandlerInterface
         $this->dispatcher = $dispatcher;
     }
 
-    public function __invoke(TaskExecuteMessage $message)
+    public function __invoke(TriggerExecutedMessage $message)
     {
-        $this->dispatcher->dispatch(new TaskExecuteEvent($message->getTaskId()));
+        $this->dispatcher->dispatch(new TriggerExecutedEvent($message->getTaskId()));
     }
 }

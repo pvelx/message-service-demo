@@ -1,24 +1,24 @@
 <?php declare(strict_types=1);
 
 
-namespace App\Contract\TaskServerAdapter;
+namespace App\Contract\TriggerServiceAdapter;
 
 use Proto\Request;
 use Proto\Response;
 
-interface TaskServerAdapterInterface
+interface TriggerServiceAdapterInterface
 {
     /**
      * @param Request $request
      * @return Response
-     * @throws TaskServerAdapterExceptionInterface
+     * @throws TriggerServiceAdapterExceptionInterface
      */
     public function create(Request $request): Response;
 
     /**
      * @param Request $request
      * @return Response
-     * @throws TaskServerAdapterExceptionInterface
+     * @throws TriggerServiceAdapterExceptionInterface
      */
     public function delete(Request $request): Response;
 }

@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
 
-namespace App\Service\TaskServerGrpcAdapter;
+namespace App\Service\TriggerServiceGrpcAdapter;
 
-use App\Contract\TaskServerAdapter\TaskServerAdapterInterface;
-use App\Service\TaskServerGrpcAdapter\Exception\TaskServerGrpcAdapterException;
+use App\Contract\TriggerServiceAdapter\TriggerServiceAdapterInterface;
+use App\Service\TriggerServiceGrpcAdapter\Exception\TriggerServiceGrpcAdapterException;
 use Grpc\ChannelCredentials;
 use Proto\Request;
 use Proto\Response;
 use Proto\TaskClient;
 use Throwable;
 
-class TaskServerGrpcAdapter implements TaskServerAdapterInterface
+class TriggerServiceGrpcAdapter implements TriggerServiceAdapterInterface
 {
     private $client;
 
@@ -23,7 +23,7 @@ class TaskServerGrpcAdapter implements TaskServerAdapterInterface
     /**
      * @param Request $taskRequest
      * @return Response
-     * @throws TaskServerGrpcAdapterException
+     * @throws TriggerServiceGrpcAdapterException
      */
     public function create(Request $taskRequest): Response
     {
@@ -33,7 +33,7 @@ class TaskServerGrpcAdapter implements TaskServerAdapterInterface
     /**
      * @param Request $taskRequest
      * @return Response
-     * @throws TaskServerGrpcAdapterException
+     * @throws TriggerServiceGrpcAdapterException
      */
     public function delete(Request $taskRequest): Response
     {
@@ -51,11 +51,11 @@ class TaskServerGrpcAdapter implements TaskServerAdapterInterface
             /** @var Response $response */
             list($response, $status) = $this->client->{$method}($taskRequest)->wait();
         } catch (Throwable $e) {
-            throw new TaskServerGrpcAdapterException($e);
+            throw new TriggerServiceGrpcAdapterException($e);
         }
 
         if ($status->code !== \Grpc\STATUS_OK) {
-            throw new TaskServerGrpcAdapterException(sprintf("ERROR: code:%s details:%s", $status->code, $status->details));
+            throw new TriggerServiceGrpcAdapterException(sprintf("ERROR: code:%s details:%s", $status->code, $status->details));
         }
 
         return $response;
