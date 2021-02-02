@@ -15,7 +15,7 @@ class Config
         self::TASK_TYPE_SENDING_PUSH => SendingTimeMessageTriggeredEvent::class
     ];
 
-    static public function getEventByType($type): BaseEvent
+    static public function getEventByType($type): string
     {
         return self::$bindTaskTypeToEvent[$type];
     }
