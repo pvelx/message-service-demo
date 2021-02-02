@@ -59,4 +59,6 @@ COPY ./docker/php.ini /usr/local/etc/php/php.ini
 
 RUN composer install
 
+RUN chown -R www-data:www-data /app
+
 EXPOSE 9000
