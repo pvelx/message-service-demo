@@ -30,23 +30,23 @@ services:
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
 
-  App\Service\TaskServerGrpcAdapter\TaskServerGrpcAdapter:
+  App\Service\TriggerServiceGrpcAdapter\TriggerServiceGrpcAdapter:
     arguments:
       $host: '%env(TASK_GRPC_SERVER_HOST)%'
 
-  App\Contract\TaskServerAdapter\TaskServerAdapterInterface:
-    alias: App\Service\TaskServerGrpcAdapter\TaskServerGrpcAdapter
+  App\Contract\TriggerServiceAdapter\TriggerServiceAdapterInterface:
+    alias: App\Service\TriggerServiceGrpcAdapter\TriggerServiceGrpcAdapter
 
   task_server_grpc_adapter.serializer:
     class: App\Serializer\AmqpMessageSerializer
     arguments:
-      $messageClass: App\Service\TaskServerGrpcAdapter\BusMessage\TaskExecuteMessage
+      $messageClass: App\Service\TriggerServiceGrpcAdapter\BusMessage\TriggerExecutedMessage
 
   App\Service\TaskService\TaskService:
     tags:
       - name: kernel.event_listener
-        event: App\Service\TaskServerGrpcAdapter\Event\TaskExecuteEvent
-        method: onTaskExecuteEvent
+        event: App\Service\TriggerServiceGrpcAdapter\Event\TriggerExecutedEvent
+        method: onTriggerExecutedEvent
 
   App\Domain\Message\MessageManager:
     tags:

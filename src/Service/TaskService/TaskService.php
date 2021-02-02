@@ -3,14 +3,14 @@
 
 namespace App\Service\TaskService;
 
-use App\Contract\TaskServerAdapter\TaskServerAdapterInterface;
+use App\Contract\TriggerServiceAdapter\TriggerServiceAdapterInterface;
 use App\Contract\TaskService\TaskServiceInterface;
 use App\Service\TaskService\Entity\Task;
 use App\Service\TaskService\Event\TaskCanceledEvent;
 use App\Service\TaskService\Event\TaskCreatedEvent;
 use App\Service\TaskService\Exception\TaskServiceException;
 use App\Service\TaskService\Repository\TaskRepository;
-use App\Service\TaskServerGrpcAdapter\Event\TaskExecuteEvent;
+use App\Service\TriggerServiceGrpcAdapter\Event\TriggerExecutedEvent;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
@@ -23,21 +23,21 @@ use Throwable;
 
 class TaskService implements TaskServiceInterface
 {
-    private $taskServerAdapter;
+    private $triggerServiceAdapter;
     private $entityManager;
     private $eventDispatcher;
     private $repository;
     private $logger;
 
     public function __construct(
-        TaskServerAdapterInterface $taskServerAdapter,
+        TriggerServiceAdapterInterface $triggerServiceAdapter,
         EntityManagerInterface $entityManager,
         EventDispatcherInterface $eventDispatcher,
         TaskRepository $repository,
         LoggerInterface $logger
     )
     {
-        $this->taskServerAdapter = $taskServerAdapter;
+        $this->triggerServiceAdapter = $triggerServiceAdapter;
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->repository = $repository;
@@ -59,7 +59,7 @@ class TaskService implements TaskServiceInterface
             $request = new Request();
             $request->setExecTime($execTime->getTimestamp());
 
-            $response = $this->taskServerAdapter->create($request);
+            $response = $this->triggerServiceAdapter->create($request);
 
             $task = (new Task())
                 ->setStatus(Task::STATUS_PENDING)
@@ -108,7 +108,7 @@ class TaskService implements TaskServiceInterface
             $request = (new Request())
                 ->setId($task->getExternalId());
 
-            $response = $this->taskServerAdapter->delete($request);
+            $response = $this->triggerServiceAdapter->delete($request);
             if ($response->getStatus() != 'ok') {
                 throw new RuntimeException('Deleting in task server was failed');
             }
@@ -136,9 +136,9 @@ class TaskService implements TaskServiceInterface
     }
 
     /**
-     * @param TaskExecuteEvent $event
+     * @param TriggerExecutedEvent $event
      */
-    public function onTaskExecuteEvent(TaskExecuteEvent $event): void
+    public function onTriggerExecutedEvent(TriggerExecutedEvent $event): void
     {
         try {
             $task = $this->repository->findOneByExternalId($event->getTaskId());
