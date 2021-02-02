@@ -14,11 +14,8 @@ RUN apk add --no-cache \
     unzip \
     zlib-dev \
     linux-headers \
-    rabbitmq-c-dev
-
-
-# Optional, force UTC as server time
-RUN echo "UTC" > /etc/timezone
+    rabbitmq-c-dev \
+    supervisor
 
 
 # Install composer
@@ -54,7 +51,6 @@ RUN pecl install amqp && docker-php-ext-enable amqp
 RUN pecl install grpc-1.33.1
 RUN docker-php-ext-enable grpc
 
-RUN apk add --no-cache supervisor
 RUN rm /etc/supervisord.conf
 COPY supervisor/ /etc/supervisor/
 
