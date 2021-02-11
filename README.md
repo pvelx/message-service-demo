@@ -1,9 +1,9 @@
-Микросервис является частью приложения [Message](https://github.com/pvelx/k8s-message-demo).
+The microservice is part of the application [Message](https://github.com/pvelx/k8s-message-demo).
 ---
 
-Демонстрационное приложение, отвечающее за создание, удаление, отложенную отправку сообщений. Написан на базе фреймворка Symfony 5.
-
-![Scheme](./scheme.png)
+A demo application that is responsible for creating, deleting, and deferred sending messages. 
+It is written on the basis of the Symfony 5 framework.
+![Scheme](./scheme-v2.jpg)
 
 ### License
 
